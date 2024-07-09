@@ -1,17 +1,21 @@
 <?php
 
+defined( 'ABSPATH' ) || exit;
+
+
 class Wc_Rw_Wooms_Sync_Api_Request{
 
     private static $instance;
-    private string $credentials;
+    private $credentials;
+    private $config;
 
-    public function __construct(){
+    private function __construct(){
 
         $api_config = require plugin_dir_path( __DIR__ ) . 'config/config_api.php';
         $user_name = $api_config['name'];
         $password = $api_config['password'];
         $this->credentials = base64_encode("$user_name:$password");
-
+        $this->config = Wc_Rw_Wooms_Sync_Config::get_instance();
 
     }
 
@@ -26,16 +30,25 @@ class Wc_Rw_Wooms_Sync_Api_Request{
         return self::$instance;
     }
 
-
-    public function get_products_id(array $external_codes){
+    /**
+     * Retrieves product IDs from MoySklad using external codes.
+     *
+     * This method performs HTTP requests to the MoySklad API to obtain product IDs based on provided external codes.
+     * In case of request or response processing errors, the method returns false.
+     *
+     * @param array $external_codes Associative array of external product codes where the key is the product ID and the value is the product data.
+     * @param int $order_id The order ID for logging errors.
+     * @return array|false Associative array with product IDs from MoySklad or false in case of an error.
+     */
+    public function get_products_ids(array $external_codes, int $order_id){
 
         $product_ms_ids = [];
 
         foreach ($external_codes as $product_id => $product_data) {
 
-            $base_url = $product_data['bundle'] ? API_REQUEST_BUNDLE_URI : API_REQUEST_PRODUCT_URI;
+            $base_url = $product_data['is_bundle'] ? API_REQUEST_BUNDLE_URI : API_REQUEST_PRODUCT_URI;
 
-            $url = $base_url . $product_data['external_code'];
+            $url = $base_url . $product_data['moy_sklad_ext_code'];
 
             $args = array(
                 'headers' => array(
@@ -46,43 +59,58 @@ class Wc_Rw_Wooms_Sync_Api_Request{
 
             $response = wp_remote_get($url, $args);
 
-            $body = wp_remote_retrieve_body($response);
+            if(is_wp_error($response)) {
 
+                Wc_Rw_Wooms_Sync_Logger::make_log($order_id, '-', $response->get_error_message(), 'product_id_request', 'wp_remote_get_error');
+                return false;
+
+            }
+
+            $response_code = wp_remote_retrieve_response_code($response);
+            if($response_code !== 200) {
+
+                Wc_Rw_Wooms_Sync_Logger::make_log($order_id, $response_code, wp_remote_retrieve_response_message($response), 'product_id_request', 'api_moy_sklad');
+                return false;
+
+            }
+
+            $body = wp_remote_retrieve_body($response);
             $product = json_decode($body, true);
 
-            $product_ms_ids[$product_id]['type'] = $product_data['bundle'] ? 'bundle' : 'product';
-            $product_ms_ids[$product_id]['href'] = $product['rows'][0]['meta']['href'];
-            $product_ms_ids[$product_id]['metadataHref'] = $product['rows'][0]['meta']['metadataHref'];
+            if (json_last_error() !== JSON_ERROR_NONE) {
 
-            //$product_ms_ids[$product_id] = $product;
+                Wc_Rw_Wooms_Sync_Logger::make_log($order_id, '-', json_last_error_msg(), 'product_id_request', 'json_decode_error');
+                return false;
 
+            }
 
-            /*if (is_wp_error($response)) {
-                echo 'Error occurred: ' . $response->get_error_message() . "\n";
-            } else {
-                $body = wp_remote_retrieve_body($response);
-                $productData = json_decode($body, true);
-
-                // Проверяем на ошибки декодирования JSON
-                if (json_last_error() === JSON_ERROR_NONE) {
-                    print_r($productData);  // Обработка полученных данных продукта
-                } else {
-                    echo 'JSON decode error: ' . json_last_error_msg() . "\n";
-                }
-            }*/
+            $product_ms_ids[$product_id]['type'] = $product_data['is_bundle'] ? 'bundle' : 'product';
+            $product_ms_ids[$product_id]['href'] = $product['rows'][0]['meta']['href'] ?? $this->config->get_property('unknown_product_id');
+            $product_ms_ids[$product_id]['metadataHref'] = $product['rows'][0]['meta']['metadataHref'] ?? 'https://api.moysklad.ru/api/remap/1.2/entity/product/metadata';
 
         }
 
-        return $product_ms_ids;
-
+        return  $product_ms_ids;
     }
 
-    public function create_order($order_data, $product_ids){
 
-        $url = 'https://api.moysklad.ru/api/remap/1.2/entity/customerorder';
+
+    /**
+     * Creates an order in MoySklad using provided order data and product IDs.
+     *
+     * This method performs a POST request to the MoySklad API to create an order based on the provided data.
+     * In case of request or response processing errors, the method logs the error and returns false.
+     *
+     * @param array $order_data Associative array containing order data.
+     * @param array $product_ids Associative array of product IDs from MoySklad.
+     * @param int $order_id The order ID for logging errors.
+     * @return bool True if the order was created successfully, false otherwise.
+     */
+    public function create_order(array $order_data, array $product_ids, int $order_id){
+
+        $url = API_CREATE_ORDER;
 
         $order_data = [
-
             "name" => $order_data['order_number'],
             "description" => $order_data['customer_note'],
             "organization" => [
@@ -117,7 +145,6 @@ class Wc_Rw_Wooms_Sync_Api_Request{
                         "mediaType" => "application/json"
                     ]
                 ],
-                "value" => $order_data['order_rate']
             ],
             "store" => [
                 "meta" => [
@@ -221,8 +248,9 @@ class Wc_Rw_Wooms_Sync_Api_Request{
             "positions" => array_merge($this->create_positions_array($order_data['items_data'], $product_ids ), $this->create_services_array($order_data['fees_data'], $order_data['shipping_data']))
         ];
 
-        //return json_encode($order_data);
+        // Encode the order data as JSON
         $order_data_json = json_encode($order_data);
+
         $args = array(
             'body'        => $order_data_json,
             'headers'     => array(
@@ -233,29 +261,36 @@ class Wc_Rw_Wooms_Sync_Api_Request{
             'data_format' => 'body',
         );
 
-// Выполнение POST-запроса
         $response = wp_remote_post($url, $args);
 
-        return $response;
-// Проверка на наличие ошибок
-        /*if (is_wp_error($response)) {
-            echo 'Error occurred: ' . $response->get_error_message() . "\n";
-        } else {
-            $body = wp_remote_retrieve_body($response);
-            $response_data = json_decode($body, true);
+        // Check for errors in the response
+        if(is_wp_error($response)) {
+            Wc_Rw_Wooms_Sync_Logger::make_log($order_id, '-', $response->get_error_message(), 'create_order_request', 'wp_remote_post_error');
+            return false;
+        }
 
-            // Проверяем на ошибки декодирования JSON
-            if (json_last_error() === JSON_ERROR_NONE) {
-                print_r($response_data);  // Обработка полученных данных ответа
-            } else {
-                echo 'JSON decode error: ' . json_last_error_msg() . "\n";
-            }
-        }*/
+        // Retrieve and check the response code
+        $response_code = wp_remote_retrieve_response_code($response);
+        if($response_code !== 200) {
+            Wc_Rw_Wooms_Sync_Logger::make_log($order_id, $response_code, wp_remote_retrieve_response_message($response), 'create_order_request', 'api_moy_sklad');
+            return false;
+        }
 
+        return true;
 
     }
 
-    private function create_positions_array($products, $product_ids) {
+
+    /**
+     * Creates an array of positions for the order from provided product data and product IDs.
+     *
+     * This method constructs an array of positions using the product details and their corresponding IDs from MoySklad.
+     *
+     * @param array $products Associative array of product details, where the key is the product ID and the value is the product data.
+     * @param array $product_ids Associative array of product IDs from MoySklad, where the key is the product ID and the value is the product metadata.
+     * @return array An array of positions formatted for the MoySklad order.
+     */
+    private function create_positions_array(array $products, array $product_ids) {
 
         $positions = [];
 
@@ -285,7 +320,16 @@ class Wc_Rw_Wooms_Sync_Api_Request{
         return $positions;
     }
 
-    private function create_services_array($fees_data, $shipping_data) {
+    /**
+     * Creates an array of services for the order from provided fees and shipping data.
+     *
+     * This method constructs an array of services using the fees and shipping details provided.
+     *
+     * @param array $fees_data Associative array containing the fees data.
+     * @param array $shipping_data Associative array containing the shipping data.
+     * @return array An array of services formatted for the MoySklad order.
+     */
+    private function create_services_array(array $fees_data, array $shipping_data) {
 
         $services = [];
 

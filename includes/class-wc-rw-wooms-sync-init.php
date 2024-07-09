@@ -25,7 +25,6 @@ class Wc_Rw_Wooms_Sync_Init {
         //add content to added column
         //add_action( 'manage_shop_order_posts_custom_column', array($this, 'new_order_column_add_content'), 10, 2);
 
-
     }
 
     public static function get_instance() {
@@ -108,10 +107,15 @@ class Wc_Rw_Wooms_Sync_Init {
      * Save custom product field
      */
     public function save_custom_product_field( $post_id ) {
-        $custom_field_value_code = isset( $_POST['_moy_sklad_ext_code'] ) ? sanitize_text_field( $_POST['_moy_sklad_ext_code'] ) : '';
-        update_post_meta( $post_id, '_moy_sklad_ext_code', $custom_field_value_code );
-        $custom_field_value_bundle = $_POST['_is_bundle'];
+
+        $custom_field_value_external_code = !empty( $_POST['_moy_sklad_ext_code'] ) ? sanitize_text_field( $_POST['_moy_sklad_ext_code'] ) : '';
+
+        update_post_meta( $post_id, '_moy_sklad_ext_code', $custom_field_value_external_code );
+
+        $custom_field_value_bundle = !empty( $_POST['_moy_sklad_ext_code'] ) ?  $_POST['_is_bundle'] : '';
+
         update_post_meta( $post_id, '_is_bundle', $custom_field_value_bundle );
+
     }
 
     /**
@@ -121,7 +125,6 @@ class Wc_Rw_Wooms_Sync_Init {
      * @return mixed
      *
      */
-
     public function create_new_order_column( $columns )
     {
         $columns['ms_status'] = 'Moy sklad';

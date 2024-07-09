@@ -14,7 +14,8 @@ jQuery(document).ready(function($){
             url: wc_rw_wooms_sync_ajax_obj.ajax_url,
             data: {
                 action: "synchronise_order_action",
-                order_id: getOrderIdFromUrl()
+                order_id: getOrderIdFromUrl(),
+                security: wc_rw_wooms_sync_ajax_obj.security
 
             },
             dataType: "json",

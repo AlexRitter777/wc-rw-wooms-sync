@@ -25,6 +25,7 @@ class Wc_Rw_Wooms_Sync {
         $this->register_ajax_handler();
         $this->initialize_plugin();
         $this->load_debugger();
+        $this->load_classes();
 
     }
 
@@ -52,7 +53,7 @@ class Wc_Rw_Wooms_Sync {
         }
 
         wp_enqueue_script('wc-rw-wooms-sync-ajax-script', WP_PLUGIN_URL  . '/wc-rw-wooms-sync/assets/js/ajax.js', array('jquery'), "1.1", true);
-        wp_localize_script('wc-rw-wooms-sync-ajax-script','wc_rw_wooms_sync_ajax_obj', array('ajax_url' => admin_url( 'admin-ajax.php' ),));
+        wp_localize_script('wc-rw-wooms-sync-ajax-script','wc_rw_wooms_sync_ajax_obj', array('ajax_url' => admin_url( 'admin-ajax.php' ),'security' => wp_create_nonce('wc_rw_wooms_sync_ajax_nonce')));
 
     }
 
@@ -66,6 +67,15 @@ class Wc_Rw_Wooms_Sync {
     private function load_config(){
         require_once WP_PLUGIN_DIR . '/wc-rw-wooms-sync/config/config_api.php';
         require_once  WP_PLUGIN_DIR . '/wc-rw-wooms-sync/config/init.php';
+        require_once WP_PLUGIN_DIR . '/wc-rw-wooms-sync/includes/class-wc-rw-wooms-sync-config.php';
+
+    }
+
+    private function load_classes(){
+        require_once WP_PLUGIN_DIR . '/wc-rw-wooms-sync/includes/class-wc-rw-wooms-sync-data-getter.php';
+        require_once WP_PLUGIN_DIR . '/wc-rw-wooms-sync/includes/class-wc-rw-wooms-sync-api-request.php';
+        require_once WP_PLUGIN_DIR . '/wc-rw-wooms-sync/includes/class-wc-rw-wooms-sync-logger.php';
+
     }
 
 
