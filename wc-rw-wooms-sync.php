@@ -2,7 +2,7 @@
 /**
 Plugin Name:  WooCommerce RW WooMS Synchronisation
 Description: Transfers orders from WooCommerce to Moy Sklad CRM.
-Version: 1.0.0
+Version: 1.2.0
 Author: Alexej Bogačev
  */
 
@@ -18,34 +18,44 @@ class Wc_Rw_Wooms_Sync {
     {
 
         $this->load_config();
-
-        //register styles and scripts
-        add_action('admin_enqueue_scripts', array($this, 'load_admin_scripts'));
-
-        $this->register_ajax_handler();
-        $this->initialize_plugin();
+        $this->register_hooks();
         $this->load_debugger();
-        $this->load_classes();
 
     }
 
-    private function initialize_plugin()
-    {
+    /**
+     * Register all hooks.
+     */
+    private function register_hooks() {
+        add_action('admin_enqueue_scripts', [$this, 'load_admin_scripts']);
+        add_action('wp_ajax_synchronise_order_action', [$this, 'register_ajax_handler']);
+        add_action('plugins_loaded', [$this, 'initialize_plugin']);
+    }
 
-        require WP_PLUGIN_DIR . '/wc-rw-wooms-sync/includes/class-wc-rw-wooms-sync-init.php';
+    /**
+     * Initialize the plugin.
+     */
+    public function initialize_plugin()
+    {
+        $this->load_classes();
         Wc_Rw_Wooms_Sync_Init::get_instance();
 
     }
 
 
-
-    protected function register_ajax_handler(){
-
+    /**
+     * Register the AJAX handler.
+     */
+    public function register_ajax_handler(){
         require_once WP_PLUGIN_DIR . '/wc-rw-wooms-sync/includes/class-wc-rw-wooms-sync-ajax-handler.php';
-        add_action( 'wp_ajax_synchronise_order_action', array('Wc_Rw_Wooms_Ajax_Handler','synchronise_order_action' ));
-
+        Wc_Rw_Wooms_Ajax_Handler::synchronise_order_action();
     }
 
+    /**
+     * Load admin scripts.
+     *
+     * @param string $hook
+     */
     public function load_admin_scripts($hook){
 
         if ( 'post.php' != $hook && 'post-new.php' != $hook ) {
@@ -57,13 +67,10 @@ class Wc_Rw_Wooms_Sync {
 
     }
 
-    private function load_debugger()
-    {
-        require_once WP_PLUGIN_DIR . '/wc-rw-wooms-sync/includes/wc-rw-wooms-sync-debug.php';
 
-
-    }
-
+    /**
+     * Load the configuration files.
+     */
     private function load_config(){
         require_once WP_PLUGIN_DIR . '/wc-rw-wooms-sync/config/config_api.php';
         require_once  WP_PLUGIN_DIR . '/wc-rw-wooms-sync/config/init.php';
@@ -71,15 +78,24 @@ class Wc_Rw_Wooms_Sync {
 
     }
 
+    /**
+     * Load all necessary classes.
+     */
     private function load_classes(){
+        require_once WP_PLUGIN_DIR . '/wc-rw-wooms-sync/includes/class-wc-rw-wooms-sync-init.php';
         require_once WP_PLUGIN_DIR . '/wc-rw-wooms-sync/includes/class-wc-rw-wooms-sync-data-getter.php';
         require_once WP_PLUGIN_DIR . '/wc-rw-wooms-sync/includes/class-wc-rw-wooms-sync-api-request.php';
         require_once WP_PLUGIN_DIR . '/wc-rw-wooms-sync/includes/class-wc-rw-wooms-sync-logger.php';
+        require_once WP_PLUGIN_DIR . '/wc-rw-wooms-sync/includes/class-wc-rw-wooms-sync-actions.php';
 
     }
 
 
+    private function load_debugger()
+    {
+        require_once WP_PLUGIN_DIR . '/wc-rw-wooms-sync/includes/wc-rw-wooms-sync-debug.php';
 
+    }
 
 
 }

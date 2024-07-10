@@ -1,13 +1,10 @@
 jQuery(document).ready(function($){
 
-    console.log('OK');
-
     $('body').on('click', '#wc-rw-wooms-sync-button', function (e){
 
-
         e.preventDefault();
-        //startSpinner();
-        console.log('Clicked!');
+        startSpinner();
+        //console.log('Clicked!');
 
         $.ajax({
             type: "POST",
@@ -16,30 +13,29 @@ jQuery(document).ready(function($){
                 action: "synchronise_order_action",
                 order_id: getOrderIdFromUrl(),
                 security: wc_rw_wooms_sync_ajax_obj.security
-
             },
             dataType: "json",
             encode: true
-
         })
 
             .done((response) => {
-
                 console.log(response); //debugging
-                //stopSpinner();
+                stopSpinner();
+                $('#sync_date').text(response.data.values.moy_sklad_sync_date);
+                $('#sync_status').text(response.data.values.moy_sklad_sync_status);
+                if(response.data.values.moy_sklad_sync_status === 'OK') {
+                    $('#sync_button').remove();
+                }
+            })
 
-
-
-            });
-
-
-
+            .fail(() =>{
+                console.log('Server connection error! Please try again later!');
+                alert('Server connection error! Please try again later!');
+                stopSpinner();
+            })
+        ;
 
     });
-
-
-
-
 
 });
 

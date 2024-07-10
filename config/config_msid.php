@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') || exit;
+
 return [
     'order_postfix' => 'tst', //move to prefixes config
 

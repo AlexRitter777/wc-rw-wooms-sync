@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') || exit;
+
 return [
 
     'sensor.loc' =>'ts',// test web

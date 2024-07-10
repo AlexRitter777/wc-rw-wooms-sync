@@ -4,12 +4,20 @@ defined( 'ABSPATH' ) || exit;
 
 class Wc_Rw_Wooms_Sync_Data_Getter {
 
-
+    private static $instance;
     private $config;
 
-    public function __construct(){
+    private function __construct(){
         $this->config = Wc_Rw_Wooms_Sync_Config::get_instance();
     }
+
+    public static function get_instance() {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
 
     /**
      * Retrieves the external codes and bundle status of products in an order.

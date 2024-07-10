@@ -325,11 +325,11 @@ class Wc_Rw_Wooms_Sync_Api_Request{
      *
      * This method constructs an array of services using the fees and shipping details provided.
      *
-     * @param array $fees_data Associative array containing the fees data.
+     * @param mixed $fees_data Associative array containing the fees data.
      * @param array $shipping_data Associative array containing the shipping data.
      * @return array An array of services formatted for the MoySklad order.
      */
-    private function create_services_array(array $fees_data, array $shipping_data) {
+    private function create_services_array(mixed $fees_data, array $shipping_data) {
 
         $services = [];
 
