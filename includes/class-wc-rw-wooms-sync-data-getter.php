@@ -89,10 +89,10 @@ class Wc_Rw_Wooms_Sync_Data_Getter {
             if(!$this->check_data($order_data)) {
                 return null;
             }
-
+            return $order_data;
         }
         Wc_Rw_Wooms_Sync_Logger::make_log($order_id, '-', "Order not found", "data_getter", "internal_error");
-        return $order_data;
+        return null;
 
     }
 

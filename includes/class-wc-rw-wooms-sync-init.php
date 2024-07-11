@@ -65,24 +65,24 @@ class Wc_Rw_Wooms_Sync_Init {
         $moy_sklad_sync_status = !empty($order->get_meta('moy_sklad_sync_status')) ? $order->get_meta('moy_sklad_sync_status') : str_repeat('&nbsp;', 4) . '&ndash;';
 
             echo '
-                <div id="wc-rw-opacity">
+                <div id="wc-rw-wooms-sync-opacity">
                      <ul style="margin: 0">
                         <li >
-                            <strong>Дата синхронизации: </strong><span id="sync_date"> '. $moy_sklad_sync_date . '</span>
+                            <strong>Дата синхронизации: </strong><span id="wc-rw-wooms-sync-date"> '. $moy_sklad_sync_date . '</span>
                          </li >
                          <li >
-                            <strong>Статус синхронизации: </strong><span id="sync_status">' . $moy_sklad_sync_status .'</span>
+                            <strong>Статус синхронизации: </strong><span id="wc-rw-wooms-sync-status">' . $moy_sklad_sync_status .'</span>
                          </li >';
             if($moy_sklad_sync_status !== 'OK'){
                 echo '
-                    <li id="sync_button" style="text-align: right">
+                        <li id="sync_button" style="text-align: right">
                             <button id="wc-rw-wooms-sync-button" class="add_note button button-primary">Sync</button>
-                         </li>
+                        </li>
                     </ul>';
                 }
             echo '
                 </div>
-                <span id="wc-rw-spinner" class="spinner"></span>
+                <span id="wc-rw-wooms-sync-spinner" class="spinner"></span>
                 ';
 
     }

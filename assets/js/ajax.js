@@ -21,10 +21,10 @@ jQuery(document).ready(function($){
             .done((response) => {
                 console.log(response); //debugging
                 stopSpinner();
-                $('#sync_date').text(response.data.values.moy_sklad_sync_date);
-                $('#sync_status').text(response.data.values.moy_sklad_sync_status);
+                $('#wc-rw-wooms-sync-date').text(response.data.values.moy_sklad_sync_date);
+                $('#wc-rw-wooms-sync-status').text(response.data.values.moy_sklad_sync_status);
                 if(response.data.values.moy_sklad_sync_status === 'OK') {
-                    $('#sync_button').remove();
+                    $('#wc-rw-wooms-sync-button').remove();
                 }
             })
 
@@ -45,14 +45,14 @@ jQuery(document).ready(function($){
 
 //loader spinner start
 function startSpinner(){
-    jQuery('#wc-rw-opacity').addClass('opacity');
-    jQuery('#wc-rw-spinner').addClass('is-active');
+    jQuery('#wc-rw-wooms-sync-opacity').addClass('wc-rw-wooms-sync-opacity');
+    jQuery('#wc-rw-wooms-sync-spinner').addClass('is-active');
 }
 
 //loader spinner stop
 function stopSpinner(){
-    jQuery('#wc-rw-opacity').removeClass('opacity');
-    jQuery('#wc-rw-spinner').removeClass('is-active');
+    jQuery('#wc-rw-wooms-sync-opacity').removeClass('wc-rw-wooms-sync-opacity');
+    jQuery('#wc-rw-wooms-sync-spinner').removeClass('is-active');
 }
 
 // Get current order Id
