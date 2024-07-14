@@ -28,25 +28,39 @@ class Wc_Rw_Wooms_Sync_Data_Getter {
     public function get_products_external_codes(string $order_id) : array
     {
 
-        $result = [];
+        $items_data = [];
 
         $order = wc_get_order($order_id);
 
         foreach ($order->get_items() as $key => $item){
 
             $product_id = $item->get_product_id();
+            $variation_id = $item->get_variation_id();
 
-            $product = wc_get_product( $item->get_product_id());
+            if ($variation_id){
 
-            $moy_sklad_ext_code = get_post_meta($product->get_id(), '_moy_sklad_ext_code', true);
+                // External code
+                $moy_sklad_ext_code = get_post_meta($variation_id, '_moy_sklad_ext_code', true);
+                $items_data[$variation_id]['moy_sklad_ext_code'] = !empty($moy_sklad_ext_code) ? $moy_sklad_ext_code : $this->config->get_property('unknown_product_external');
 
-            $result[$product_id]['moy_sklad_ext_code'] = !empty($moy_sklad_ext_code) ? $moy_sklad_ext_code : $this->config->get_property('unknown_product_external');
+                // Is bundle
+                $items_data[$variation_id]['is_bundle'] = get_post_meta($variation_id, '_is_bundle', true);
 
-            $result[$product_id]['is_bundle'] = get_post_meta($product->get_id(), '_is_bundle', true);
+            } else {
+
+                // External code for simple product
+                $moy_sklad_ext_code = get_post_meta($product_id, '_moy_sklad_ext_code', true);
+                $items_data[$product_id]['moy_sklad_ext_code'] = !empty($moy_sklad_ext_code) ? $moy_sklad_ext_code : $this->config->get_property('unknown_product_external');
+
+                // Is bundle
+                $items_data[$product_id]['is_bundle'] = get_post_meta($product_id, '_is_bundle', true);
+
+            }
+
 
         }
 
-        return $result;
+        return $items_data;
     }
 
     /**
@@ -82,7 +96,7 @@ class Wc_Rw_Wooms_Sync_Data_Getter {
             $order_data['country'] = $this->get_order_country($order, $this->config);
             $order_data['vat_enabled'] = $this->is_order_has_vat($order);
             $order_data['vat_included'] = $order_data['vat_enabled'];
-            $order_data['items_data'] = $this->get_order_items_data($order, $this->config);
+            $order_data['items_data'] = $this->get_order_items_data($order);
             $order_data['shipping_data'] = $this->get_order_shipping_data($order, $this->config);
             $order_data['fees_data'] = $this->get_order_fees_data($order, $this->config);
 
@@ -104,11 +118,47 @@ class Wc_Rw_Wooms_Sync_Data_Getter {
      * @param Wc_Rw_Wooms_Sync_Config $config
      * @return array
      */
-    private function get_order_items_data(WC_Order $order, Wc_Rw_Wooms_Sync_Config $config) : array
+    private function get_order_items_data(WC_Order $order) : array
     {
         $items_data = [];
 
         foreach ($order->get_items() as $key => $item) {
+            $product_id = $item->get_product_id();
+            $variation_id = $item->get_variation_id();
+            $product = wc_get_product($product_id);
+
+            if ($variation_id) {
+                $variation = wc_get_product($variation_id);
+
+                // Tax rate
+                $tax_rates = WC_Tax::get_rates($variation->get_tax_class());
+                $tax_rate = reset($tax_rates);
+                $items_data[$variation_id]['tax_rate'] = $tax_rate['rate'];
+
+            } else {
+                // Tax rate for simple product
+                $tax_rates = WC_Tax::get_rates($product->get_tax_class());
+                $tax_rate = reset($tax_rates);
+                $items_data[$product_id]['tax_rate'] = $tax_rate['rate'];
+
+            }
+
+            // VAT enabled
+            $items_data[$variation_id ? $variation_id : $product_id]['vat_enabled'] = (bool)$item->get_total_tax();
+
+            // Quantity
+            $items_data[$variation_id ? $variation_id : $product_id]['quantity'] = $item->get_quantity();
+
+            // Total price including VAT
+            $total_price_exl_vat = $item->get_total();
+            $total_vat = $item->get_total_tax();
+            $items_data[$variation_id ? $variation_id : $product_id]['unit_price_inc_vat'] = $this->make_price(($total_price_exl_vat + $total_vat) / $item->get_quantity());
+        }
+
+
+
+
+       /* foreach ($order->get_items() as $key => $item) {
 
             $product_id = $item->get_product_id();
 
@@ -136,7 +186,7 @@ class Wc_Rw_Wooms_Sync_Data_Getter {
             // Is bundle
             $items_data[$product_id]['is_bundle'] = get_post_meta($product->get_id(), '_is_bundle', true);
 
-        }
+        }*/
 
         return $items_data;
 

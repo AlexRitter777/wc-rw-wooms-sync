@@ -10,22 +10,28 @@ class Wc_Rw_Wooms_Sync_Init {
     public function __construct()
     {
 
-        //add admin meta box
+        // Add admin meta box
         add_action( 'add_meta_boxes', array($this, 'create_admin_meta_box') );
 
-        //add custom product field for MS code
+        // Add custom product fields  "MS code" and "Is bundle"
         add_action( 'woocommerce_product_options_general_product_data', array($this, 'add_custom_product_field' ));
 
-        // Save custom product field
+        // Save custom product fields
         add_action( 'woocommerce_process_product_meta', array($this, 'save_custom_product_field') );
 
-        //add new column in admin order list
+        // Add custom product fields  "MS code" and "Is bundle" for product variations
+        add_action('woocommerce_variation_options_pricing', [$this, 'add_variation_custom_product_field'], 10, 3);
+
+        // Save product fields  "MS code" and "Is bundle" for product variations
+        add_action('woocommerce_save_product_variation', [$this, 'save_variation_custom_product_field'], 10, 2);
+
+        // Add new column in admin order list
         add_filter('manage_edit-shop_order_columns', array($this, 'create_new_order_column'));
 
-        //add content to added column
+        // Add content to added column
         add_action( 'manage_shop_order_posts_custom_column', array($this, 'new_order_column_add_content'), 10, 2);
 
-        //hide plugin added meta fields on order page
+        // Hide plugin added order meta fields on order page
         add_filter('is_protected_meta', array($this, 'hide_meta_fields'), 10, 2);
 
     }
@@ -132,6 +138,54 @@ class Wc_Rw_Wooms_Sync_Init {
         update_post_meta( $post_id, '_is_bundle', $custom_field_value_bundle );
 
     }
+
+    /**
+     * Add custom product fields for product with variations.
+     */
+    public function add_variation_custom_product_field($loop, $variation_data, $variation) {
+
+        woocommerce_wp_text_input(array(
+            'id' => '_moy_sklad_ext_code[' . $loop . ']',
+            'label' => __('Внешний код "Мой склад"', 'woocommerce'),
+            'placeholder' => 'Внешний код',
+            'desc_tip' => 'true',
+            'description' => __('Введите внешний код товара из Мой склад.', 'woocommerce'),
+            'wrapper_class' => 'form-row form-row-full',
+            'value' => get_post_meta($variation->ID, "_moy_sklad_ext_code", true),
+        ));
+
+        woocommerce_wp_checkbox(
+            array(
+                'id'          => '_is_bundle[' . $loop . ']',
+                'label'       => __( 'Комплект', 'woocommerce' ),
+                'desc_tip' => 'true',
+                'description' => __( 'Отметьте, если это товар является комплектом.', 'woocommerce' ),
+                'value'     => get_post_meta($variation->ID, '_is_bundle', true),
+            )
+        );
+
+    }
+
+    /**
+     * Save custom product fields for product with variations.
+     *
+     * @param $variation_id
+     * @param $i
+     */
+    public function save_variation_custom_product_field($variation_id, $i){
+
+        if (isset($_POST['_moy_sklad_ext_code'][$i])) {
+            update_post_meta($variation_id, '_moy_sklad_ext_code', sanitize_text_field($_POST['_moy_sklad_ext_code'][$i]));
+        }
+
+        $custom_field_value_bundle = (!empty( $_POST['_moy_sklad_ext_code'][$i]) && isset($_POST['_is_bundle'][$i]))  ?  $_POST['_is_bundle'][$i] : '';
+        update_post_meta( $variation_id, '_is_bundle', $custom_field_value_bundle );
+
+
+    }
+    
+    
+    
 
     /**
      * Add additional column header in admin order list
