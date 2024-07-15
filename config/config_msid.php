@@ -57,6 +57,7 @@ return [
     'custom_countries' => [
         'LT' => API_URI . 'entity/customentity/cf95b85c-788f-11e9-9109-f8fc00054056/65d5ddf9-7890-11e9-9ff4-34e800053163',
         'PL' => API_URI . 'entity/customentity/cf95b85c-788f-11e9-9109-f8fc00054056/478196c1-875e-11ec-0a80-0e240023b78d',
+        'RO' => API_URI . 'entity/customentity/cf95b85c-788f-11e9-9109-f8fc00054056/64145db7-26f6-11ef-0a80-158b00357b10'
     ],
 
     'shipping' => API_URI . 'entity/service/23f82ebd-33a1-11ef-0a80-0208000b9028', //přeprava DPD
