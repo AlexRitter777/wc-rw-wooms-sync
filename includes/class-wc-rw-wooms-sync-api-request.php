@@ -85,7 +85,14 @@ class Wc_Rw_Wooms_Sync_Api_Request{
             }
 
             $product_ms_ids[$product_id]['type'] = $product_data['is_bundle'] ? 'bundle' : 'product';
-            $product_ms_ids[$product_id]['href'] = $product['rows'][0]['meta']['href'] ?? $this->config->get_property('unknown_product_id');
+
+            if(isset($product['rows'][0]['meta']['href'])){
+                $product_ms_ids[$product_id]['href'] = $product['rows'][0]['meta']['href'];
+            } else {
+                $product_ms_ids[$product_id]['href'] = $this->config->get_property('unknown_product_id');
+                $product_ms_ids[$product_id]['type'] = 'product';
+            }
+
             $product_ms_ids[$product_id]['metadataHref'] = $product['rows'][0]['meta']['metadataHref'] ?? 'https://api.moysklad.ru/api/remap/1.2/entity/product/metadata';
 
         }

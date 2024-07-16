@@ -64,7 +64,7 @@ return [
     'cod_payment' => API_URI . 'entity/service/30273e93-33a1-11ef-0a80-09c2000bb139',//dobírka
 
     'unknown_product_external' => 'ZcnR18DwhhgaPBBcbhiRu1', //neznámé zboží external code
-    'unknown_product_id' => API_URI . 'entity/product/3482d084-33a6-11ef-0a80-0456000d7790', //neznámé zboží - id
+    'unknown_product_id' => API_URI . 'entity/product/3482d084-33a6-11ef-0a80-0456000d7790' //neznámé zboží - id
 
 
 ];
