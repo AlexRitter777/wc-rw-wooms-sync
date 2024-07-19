@@ -279,7 +279,12 @@ class Wc_Rw_Wooms_Sync_Api_Request{
         // Retrieve and check the response code
         $response_code = wp_remote_retrieve_response_code($response);
         if($response_code !== 200) {
-            Wc_Rw_Wooms_Sync_Logger::make_log($order_id, $response_code, wp_remote_retrieve_response_message($response), 'create_order_request', 'api_moy_sklad');
+
+            $response_body = wp_remote_retrieve_body($response);
+            $decoded_response_body = json_decode($response_body, true);
+            $advanced_error_message = $decoded_response_body['errors'][0]['error'] ?? 'Unknown error';
+
+            Wc_Rw_Wooms_Sync_Logger::make_log($order_id, $response_code, wp_remote_retrieve_response_message($response), 'create_order_request', 'api_moy_sklad', $advanced_error_message);
             return false;
         }
 

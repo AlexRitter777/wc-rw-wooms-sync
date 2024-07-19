@@ -282,18 +282,17 @@ class Wc_Rw_Wooms_Sync_Data_Getter {
      * Retrieves the project configuration based on the site URL.
      *
      * @param Wc_Rw_Wooms_Sync_Config $config
-     * @return string|null
+     * @return string
      */
     private function get_order_project(Wc_Rw_Wooms_Sync_Config $config)
     {
         $site_URL = $_SERVER['SERVER_NAME'];
         $project = $config->get_property('project');
 
-        if(!$project) return null;
+        if(!$project) return $config->get_property('unknown_project');
 
         if (!isset($project[$site_URL]) || empty($project[$site_URL])) {
-            Wc_Rw_Wooms_Sync_Logger::make_log('-', '-', "Missing project for $site_URL", "data_getter", "internal_error");
-            return null;
+            return $config->get_property('unknown_project');;
         };
 
         return $project[$site_URL];
@@ -451,26 +450,35 @@ class Wc_Rw_Wooms_Sync_Data_Getter {
      */
     private function get_order_country(WC_Order $order, Wc_Rw_Wooms_Sync_Config $config)
     {
+
         $attributes = $config->get_property('attributes');
-        if(!$attributes) return null;
+        if(!$attributes) {
+            Wc_Rw_Wooms_Sync_Logger::make_log('-', '-', "Missing attributes", "data_getter", "internal_error");
+            return null;
+        }
 
-        $custom_countries =  $config->get_property('custom_countries');
-        if(!$custom_countries) return null;
-
-         if (!isset($attributes['country']) || empty($attributes['country'])) {
+        if (!isset($attributes['country']) || empty($attributes['country'])) {
             Wc_Rw_Wooms_Sync_Logger::make_log('-', '-', "Missing attr. country", "data_getter", "internal_error");
             return null;
+        }
+
+        $result = [];
+        $result['id'] = $attributes['country'];
+
+        $custom_countries =  $config->get_property('custom_countries');
+        if(!$custom_countries) {
+            $result['value']  = $config->get_property('unknown_custom_country');
+            return $result;
         }
 
         $country = $order->get_shipping_country();
 
         if (!isset($custom_countries[$country]) || empty($custom_countries[$country])) {
-            Wc_Rw_Wooms_Sync_Logger::make_log('-', '-', "Missing custom country method for $country", "data_getter", "internal_error");
-            return null;
+            $result['value']  = $config->get_property('unknown_custom_country');
+            return $result;
         }
 
         $result['value'] = $custom_countries[$country];
-        $result['id'] = $attributes['country'];
 
         return $result;
     }

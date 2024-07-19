@@ -33,7 +33,16 @@ return [
         'sensoriailibre.lt' => API_URI . 'entity/project/a0b3ff96-fc8c-11ee-0a80-16fe00089c3d',
         'diabetyk1.pl' => API_URI . 'entity/project/e5738299-fc8b-11ee-0a80-16fe00086e79',
         'sensor.loc' => API_URI . 'entity/project/ec83d6ef-323b-11ef-0a80-044b00487030',
-        'diabet1.ro' => API_URI . 'entity/project/08fcc980-3ca0-11ef-0a80-0bf8002d3b1e'
+        'diabet1.ro' => API_URI . 'entity/project/08fcc980-3ca0-11ef-0a80-0bf8002d3b1e',
+        'diabetiki1.kz' => API_URI . 'entity/project/0fd6f271-fc8c-11ee-0a80-089b0007acd6',
+        'diabetes1.ae' => API_URI . 'entity/project/9303fff5-fc8b-11ee-0a80-10b300079b6d',
+        'diabetes1.ge' => API_URI . 'entity/project/31a23603-fc8c-11ee-0a80-10b30007bf0a',
+        'med24.am' => API_URI . 'entity/project/4384450e-fc8c-11ee-0a80-17080007bb6d',
+        'diabetes5.com' => API_URI . 'entity/project/cf9e6331-fc8b-11ee-0a80-10b30007a9f9',
+        'diabetestienda.es' => API_URI . 'entity/project/fcf18f34-fc8b-11ee-0a80-011e00079b66',
+        'diaapteka.ru' => API_URI . 'entity/project/318b13b1-6caf-11e9-912f-f3d4000fe93e'
+
+
     ],
 
     'attributes' => [
@@ -55,16 +64,25 @@ return [
     ],
 
     'custom_countries' => [
-        'LT' => API_URI . 'entity/customentity/cf95b85c-788f-11e9-9109-f8fc00054056/65d5ddf9-7890-11e9-9ff4-34e800053163',
+        'LT' => API_URI . 'entity/customentity/cf95b85c-788f-11e9-9109-f8fc00054056/b8cf42a9-4603-11ef-0a80-13600018c8f2',
         'PL' => API_URI . 'entity/customentity/cf95b85c-788f-11e9-9109-f8fc00054056/478196c1-875e-11ec-0a80-0e240023b78d',
-        'RO' => API_URI . 'entity/customentity/cf95b85c-788f-11e9-9109-f8fc00054056/64145db7-26f6-11ef-0a80-158b00357b10'
+        'RO' => API_URI . 'entity/customentity/cf95b85c-788f-11e9-9109-f8fc00054056/64145db7-26f6-11ef-0a80-158b00357b10',
+        'KZ' => API_URI . 'entity/customentity/cf95b85c-788f-11e9-9109-f8fc00054056/4004d063-7890-11e9-9107-50480005445b',
+        'SA' => API_URI . 'entity/customentity/cf95b85c-788f-11e9-9109-f8fc00054056/4f420981-a3ef-11ea-0a80-030d00209a65',
+        'SI' => API_URI . 'entity/customentity/cf95b85c-788f-11e9-9109-f8fc00054056/7678c8da-3ca2-11ef-0a80-0bf8002d4d3c',
+        'AZ' => API_URI . 'entity/customentity/cf95b85c-788f-11e9-9109-f8fc00054056/8bda9f32-789a-11e9-9ff4-315000064d21',
+        'GE' => API_URI . 'entity/customentity/cf95b85c-788f-11e9-9109-f8fc00054056/39b124ac-7890-11e9-9109-f8fc00054d66',
+        'RU' => API_URI . 'entity/customentity/cf95b85c-788f-11e9-9109-f8fc00054056/1e40c481-7890-11e9-9109-f8fc00054a6e',
+        'BG' => API_URI . 'entity/customentity/cf95b85c-788f-11e9-9109-f8fc00054056/cd925e66-45fd-11ef-0a80-07b700187c48'
     ],
 
     'shipping' => API_URI . 'entity/service/23f82ebd-33a1-11ef-0a80-0208000b9028', //přeprava DPD
     'cod_payment' => API_URI . 'entity/service/30273e93-33a1-11ef-0a80-09c2000bb139',//dobírka
 
     'unknown_product_external' => 'ZcnR18DwhhgaPBBcbhiRu1', //neznámé zboží external code
-    'unknown_product_id' => API_URI . 'entity/product/3482d084-33a6-11ef-0a80-0456000d7790' //neznámé zboží - id
+    'unknown_product_id' => API_URI . 'entity/product/3482d084-33a6-11ef-0a80-0456000d7790', //neznámé zboží - id
+    'unknown_custom_country' => API_URI . 'entity/customentity/cf95b85c-788f-11e9-9109-f8fc00054056/6fab9a30-7890-11e9-912f-f3d40005735e',
+    'unknown_project' => API_URI . 'entity/project/5358be78-6caf-11e9-9ff4-315000104bed'
 
 
 ];
