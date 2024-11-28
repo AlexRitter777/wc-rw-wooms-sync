@@ -10,7 +10,8 @@ return [
     'sensoriailibre.lt' => 'lt',
     'senzorglicemie.ro' => 'ro',
     'diabetes1.si' => 'si',
-    'diabet1.ro' => 'ro'
+    'diabet1.ro' => 'ro',
+    'diabetas1.lt' => 'lt'
 
 ];
 
