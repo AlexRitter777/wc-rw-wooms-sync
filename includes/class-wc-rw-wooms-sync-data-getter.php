@@ -139,13 +139,13 @@ class Wc_Rw_Wooms_Sync_Data_Getter {
                 // Tax rate
                 $tax_rates = WC_Tax::get_rates($variation->get_tax_class());
                 $tax_rate = reset($tax_rates);
-                $items_data[$variation_id]['tax_rate'] = $tax_rate['rate'];
+                $items_data[$variation_id]['tax_rate'] = $tax_rate['rate'] ?? 0;
 
             } else {
                 // Tax rate for simple product
                 $tax_rates = WC_Tax::get_rates($product->get_tax_class());
-                $tax_rate = reset($tax_rates) ? reset($tax_rates) : 0;
-                $items_data[$product_id]['tax_rate'] = $tax_rate['rate'];
+                $tax_rate = reset($tax_rates);
+                $items_data[$product_id]['tax_rate'] = $tax_rate['rate'] ?? 0;
             }
 
             // VAT enabled
