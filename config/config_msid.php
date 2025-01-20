@@ -19,6 +19,7 @@ return [
         'PLN' => API_URI . 'entity/currency/161b19d8-e308-11eb-0a80-0180002d5baf',
         'BGN' => API_URI . 'entity/currency/7fa00f16-7482-11ed-0a80-066a00398f9b',
         'RON' => API_URI . 'entity/currency/c44ccb8e-6d73-11ec-0a80-05b700db4c0a',
+        'USD' => API_URI . 'entity/currency/ecdad325-57b3-11ea-0a80-028300020d2e'
     ],
 
     'store' => [

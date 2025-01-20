@@ -115,16 +115,22 @@ class Wc_Rw_Wooms_Sync_Data_Getter {
      *
      *
      * @param WC_Order $order
-     * @param Wc_Rw_Wooms_Sync_Config $config
-     * @return array
+     * @return array|null
      */
-    private function get_order_items_data(WC_Order $order) : array
+    private function get_order_items_data(WC_Order $order) : ?array
     {
         $items_data = [];
 
         foreach ($order->get_items() as $key => $item) {
+
             $product_id = $item->get_product_id();
             $variation_id = $item->get_variation_id();
+
+            if(!$product_id && !$variation_id){
+                Wc_Rw_Wooms_Sync_Logger::make_log($order->get_order_number(), '-', "One or more items in this order may have been deleted from WooCommerce.", "data_getter", "internal_error");
+                return null;
+            }
+
             $product = wc_get_product($product_id);
 
             if ($variation_id) {
@@ -140,7 +146,6 @@ class Wc_Rw_Wooms_Sync_Data_Getter {
                 $tax_rates = WC_Tax::get_rates($product->get_tax_class());
                 $tax_rate = reset($tax_rates);
                 $items_data[$product_id]['tax_rate'] = $tax_rate['rate'];
-
             }
 
             // VAT enabled
