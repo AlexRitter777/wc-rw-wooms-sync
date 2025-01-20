@@ -144,7 +144,7 @@ class Wc_Rw_Wooms_Sync_Data_Getter {
             } else {
                 // Tax rate for simple product
                 $tax_rates = WC_Tax::get_rates($product->get_tax_class());
-                $tax_rate = reset($tax_rates);
+                $tax_rate = reset($tax_rates) ? reset($tax_rates) : 0;
                 $items_data[$product_id]['tax_rate'] = $tax_rate['rate'];
             }
 
