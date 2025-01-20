@@ -521,7 +521,7 @@ class Wc_Rw_Wooms_Sync_Data_Getter {
         $shipping_exc_vat = $order->get_shipping_total();
         $shipping_vat = $order->get_shipping_tax();
         $result['price'] = $this->make_price($shipping_exc_vat + $shipping_vat);
-        $result['vat'] = $this->getStandardVatRate();
+        $result['vat'] = $this->getStandardVatRate() ? $this->getStandardVatRate() : 0;
         $result['id'] = $shipping;
 
         return $result;
@@ -548,7 +548,7 @@ class Wc_Rw_Wooms_Sync_Data_Getter {
             if(!$fees) return null;
 
             $result['price'] = $this->make_price($fee_exc_vat + $fee_vat);
-            $result['vat'] = $this->getStandardVatRate();
+            $result['vat'] = $this->getStandardVatRate() ? $this->getStandardVatRate() : 0;
             $result['id'] = $fees;
         }
 
