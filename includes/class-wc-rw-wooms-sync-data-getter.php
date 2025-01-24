@@ -513,7 +513,15 @@ class Wc_Rw_Wooms_Sync_Data_Getter {
     private function get_order_shipping_data(WC_Order $order, Wc_Rw_Wooms_Sync_Config $config)
     {
 
-        $shipping = $config->get_property('shipping');
+        $shipping_extractor = new Wc_Rw_Wooms_Sync_Shipping_Extractor($order);
+        $shipping_code = $shipping_extractor->get_shipping_from_third_part_plugin();
+
+        if($shipping_code) {
+            $shipping = $config->get_property($shipping_code);
+        } else {
+            $shipping = $config->get_property('shipping');
+        }
+
         if(!$shipping) return null;
 
         $result = [];

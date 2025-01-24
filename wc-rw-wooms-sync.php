@@ -2,7 +2,7 @@
 /**
 Plugin Name:  WooCommerce RW WooMS Synchronisation
 Description: Transfers orders from WooCommerce to Moy Sklad CRM.
-Version: 1.7.4
+Version: 1.8.0
 Author: Alexej Bogačev
  */
 
@@ -13,6 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class Wc_Rw_Wooms_Sync {
+
+    const VERSION = '1.8.0';
 
     public function __construct()
     {
@@ -28,6 +30,7 @@ class Wc_Rw_Wooms_Sync {
      */
     private function register_hooks() {
         add_action('admin_enqueue_scripts', [$this, 'load_admin_scripts']);
+        add_action('wp_enqueue_scripts', [$this, 'load_public_scripts']);
         add_action('wp_ajax_synchronise_order_action', [$this, 'register_ajax_handler']);
         add_action('plugins_loaded', [$this, 'initialize_plugin']);
     }
@@ -62,12 +65,19 @@ class Wc_Rw_Wooms_Sync {
             return;
         }
 
-        wp_enqueue_script('wc-rw-wooms-sync-ajax-script', WP_PLUGIN_URL  . '/wc-rw-wooms-sync/assets/js/ajax.js', array('jquery'), "1.7.4", true);
+        wp_enqueue_script('wc-rw-wooms-sync-ajax-script', WP_PLUGIN_URL  . '/wc-rw-wooms-sync/assets/js/ajax.js', array('jquery'), self::VERSION, true);
         wp_localize_script('wc-rw-wooms-sync-ajax-script','wc_rw_wooms_sync_ajax_obj', array('ajax_url' => admin_url( 'admin-ajax.php' ),'security' => wp_create_nonce('wc_rw_wooms_sync_ajax_nonce')));
-        wp_enqueue_style( 'wc-rw-wooms-sync-admin-style', WP_PLUGIN_URL . '/wc-rw-wooms-sync/assets/css/admin.css', array(), '1.7.4' );
+        wp_enqueue_style( 'wc-rw-wooms-sync-admin-style', WP_PLUGIN_URL . '/wc-rw-wooms-sync/assets/css/admin.css', array(), self::VERSION );
 
     }
 
+    public function load_public_scripts($hook){
+
+        /*if (!is_cart() || !is_checkout() ) {
+            return;
+        }*/
+        wp_enqueue_style( 'wc-rw-wooms-sync-public-style', WP_PLUGIN_URL . '/wc-rw-wooms-sync/assets/css/public.css', array(), self::VERSION );
+    }
 
     /**
      * Load the configuration files.
@@ -88,6 +98,8 @@ class Wc_Rw_Wooms_Sync {
         require_once WP_PLUGIN_DIR . '/wc-rw-wooms-sync/includes/class-wc-rw-wooms-sync-api-request.php';
         require_once WP_PLUGIN_DIR . '/wc-rw-wooms-sync/includes/class-wc-rw-wooms-sync-logger.php';
         require_once WP_PLUGIN_DIR . '/wc-rw-wooms-sync/includes/class-wc-rw-wooms-sync-actions.php';
+        require_once WP_PLUGIN_DIR . '/wc-rw-wooms-sync/includes/class-wc-rw-wooms-sync-shipping-extractor.php';
+
 
     }
 

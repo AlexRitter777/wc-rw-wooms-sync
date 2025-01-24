@@ -77,7 +77,14 @@ return [
         'BG' => API_URI . 'entity/customentity/cf95b85c-788f-11e9-9109-f8fc00054056/cd925e66-45fd-11ef-0a80-07b700187c48'
     ],
 
-    'shipping' => API_URI . 'entity/service/23f82ebd-33a1-11ef-0a80-0208000b9028', //přeprava DPD
+    'shipping' => API_URI . 'entity/service/2203e77d-d9a6-11ef-0a80-115c00000246', //ppřeprava
+    'shipping_dpd' => API_URI . 'entity/service/23f82ebd-33a1-11ef-0a80-0208000b9028', //přeprava DPD
+    'shipping_dpd_pickup' => API_URI . 'entity/service/3dce7d2e-d9a6-11ef-0a80-0d2f00000273', //přeprava DPD Pickup
+    'shipping_post' => API_URI . 'entity/service/6702c74c-d9a6-11ef-0a80-10cd000002ac', // česká pošta
+    'shipping_ems' => API_URI . 'entity/service/51902da1-d9a6-11ef-0a80-0b7e0000033f', // EMS
+    'shipping_packeta' => API_URI . 'entity/service/85b33808-d9a6-11ef-0a80-0783000006d7', // Packeta
+    'shipping_dhl' => API_URI . 'entity/service/96240956-d9a6-11ef-0a80-14a2000003e2', // DHL Express
+
     'cod_payment' => API_URI . 'entity/service/30273e93-33a1-11ef-0a80-09c2000bb139',//dobírka
 
     'unknown_product_external' => 'ZcnR18DwhhgaPBBcbhiRu1', //neznámé zboží external code
