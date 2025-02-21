@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Wc_Rw_Wooms_Sync {
 
-    const VERSION = '1.8.0';
+    const VERSION = '1.9.0';
 
     public function __construct()
     {
