@@ -13,7 +13,8 @@ return [
     'diabet1.ro' => 'ro',
     'diabetas1.lt' => 'lt',
     'diabetes1.ae' => 'ae',
-    'diabetes5.com' => 'com'
+    'diabetes5.com' => 'com',
+    'diabetiki1.kz' => 'kz'
 
 ];
 
