@@ -52,7 +52,7 @@ class Wc_Rw_Wooms_Sync_Init {
 
         add_meta_box(
             'wc_rw_wooms_sync_box',
-            'Moy sklad',
+            'CRM synchronization',
             array($this, 'get_admin_meta_box_html'),
             'shop_order'
         );
@@ -74,10 +74,10 @@ class Wc_Rw_Wooms_Sync_Init {
                 <div id="wc-rw-wooms-sync-opacity">
                      <ul style="margin: 0">
                         <li >
-                            <strong>Дата синхронизации: </strong><span id="wc-rw-wooms-sync-date"> '. $moy_sklad_sync_date . '</span>
+                            <strong>' . __('Synchronization date', 'wc-rw-wooms-sync') . ': </strong><span id="wc-rw-wooms-sync-date"> '. $moy_sklad_sync_date . '</span>
                          </li >
                          <li >
-                            <strong>Статус синхронизации: </strong><span id="wc-rw-wooms-sync-status">' . $moy_sklad_sync_status .'</span>
+                            <strong>' . __('Synchronization status', 'wc-rw-wooms-sync') . '</strong><span id="wc-rw-wooms-sync-status">' . $moy_sklad_sync_status .'</span>
                          </li >';
             if($moy_sklad_sync_status !== 'OK'){
                 echo '
