@@ -48,7 +48,12 @@ class Wc_Rw_Wooms_Sync_Actions {
     {
         $order = wc_get_order( $order_id );
         $sync_time = $order->get_meta('moy_sklad_sync_date');
-        $note = "Успешная синхронизация заказа с Мой склад $sync_time";
+
+        /* translators: %s: synchronization time */
+        $note = sprintf(
+            __( 'Successful order synchronization with CRM at %s', 'wc-rw-wooms-sync' ),
+            $sync_time
+        );
         $order->add_order_note($note);
     }
 

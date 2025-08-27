@@ -77,7 +77,7 @@ class Wc_Rw_Wooms_Sync_Init {
                             <strong>' . __('Synchronization date', 'wc-rw-wooms-sync') . ': </strong><span id="wc-rw-wooms-sync-date"> '. $moy_sklad_sync_date . '</span>
                          </li >
                          <li >
-                            <strong>' . __('Synchronization status', 'wc-rw-wooms-sync') . '</strong><span id="wc-rw-wooms-sync-status">' . $moy_sklad_sync_status .'</span>
+                            <strong>' . __('Synchronization status', 'wc-rw-wooms-sync') . ': </strong><span id="wc-rw-wooms-sync-status">' . $moy_sklad_sync_status .'</span>
                          </li >';
             if($moy_sklad_sync_status !== 'OK'){
                 echo '
@@ -103,18 +103,18 @@ class Wc_Rw_Wooms_Sync_Init {
         woocommerce_wp_text_input(
             array(
                 'id'          => '_moy_sklad_ext_code',
-                'label'       => __( 'Внешний код "Мой склад"', 'woocommerce' ),
-                'placeholder' => 'Внешний код',
+                'label'       => __( 'External CRM code', 'wc-rw-wooms-sync' ), //Внешний код "Мой склад"
+                'placeholder' => __( 'External code', 'wc-rw-wooms-sync' ),
                 'desc_tip'    => 'true',
-                'description' => __( 'Введите внешний код товара из Мой склад.', 'woocommerce' )
+                'description' => __( 'Enter external code for this item from CRM.', 'wc-rw-wooms-sync' )
             )
         );
 
         woocommerce_wp_checkbox(
             array(
                 'id'          => '_is_bundle',
-                'label'       => __( 'Комплект', 'woocommerce' ),
-                'description' => __( 'Отметьте, если это товар является комплектом.', 'woocommerce' )
+                'label'       => __( 'Bundle', 'wc-rw-wooms-sync' ),
+                'description' => __( 'Check if this item is a bundle.', 'wc-rw-wooms-sync' )
             )
         );
 
@@ -146,10 +146,10 @@ class Wc_Rw_Wooms_Sync_Init {
 
         woocommerce_wp_text_input(array(
             'id' => '_moy_sklad_ext_code[' . $loop . ']',
-            'label' => __('Внешний код "Мой склад"', 'woocommerce'),
-            'placeholder' => 'Внешний код',
+            'label' => __('External CRM code', 'wc-rw-wooms-sync'),
+            'placeholder' => 'External code',
             'desc_tip' => 'true',
-            'description' => __('Введите внешний код товара из Мой склад.', 'woocommerce'),
+            'description' => __('Enter external code for this item from CRM.', 'wc-rw-wooms-sync'),
             'wrapper_class' => 'form-row form-row-full',
             'value' => get_post_meta($variation->ID, "_moy_sklad_ext_code", true),
         ));
@@ -157,9 +157,9 @@ class Wc_Rw_Wooms_Sync_Init {
         woocommerce_wp_checkbox(
             array(
                 'id'          => '_is_bundle[' . $loop . ']',
-                'label'       => __( 'Комплект', 'woocommerce' ),
+                'label'       => __( 'Bundle', 'wc-rw-wooms-sync' ),
                 'desc_tip' => 'true',
-                'description' => __( 'Отметьте, если это товар является комплектом.', 'woocommerce' ),
+                'description' => __( 'Check if this item is a bundle.', 'woocommerce' ),
                 'value'     => get_post_meta($variation->ID, '_is_bundle', true),
             )
         );
@@ -196,7 +196,7 @@ class Wc_Rw_Wooms_Sync_Init {
      */
     public function create_new_order_column( $columns )
     {
-        $columns['ms_status'] = 'Moy sklad';
+        $columns['ms_status'] = __('Sync Status', 'wc-rw-wooms-sync');
         return $columns;
     }
 
