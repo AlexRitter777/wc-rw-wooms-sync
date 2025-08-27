@@ -52,7 +52,7 @@ class Wc_Rw_Wooms_Sync_Init {
 
         add_meta_box(
             'wc_rw_wooms_sync_box',
-            'CRM synchronization',
+            __('CRM Sync', 'wc-rw-wooms-sync'),
             array($this, 'get_admin_meta_box_html'),
             'shop_order'
         );

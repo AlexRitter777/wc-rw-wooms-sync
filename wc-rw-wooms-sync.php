@@ -2,7 +2,7 @@
 /**
 Plugin Name:  WooCommerce RW WooMS Synchronisation
 Description: Transfers orders from WooCommerce to Moy Sklad CRM.
-Version: 1.12.0
+Version: 1.12.1
 Author: Alexej Bogačev (RAIN WOLF s.r.o.)
  */
 
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Wc_Rw_Wooms_Sync {
 
-    const VERSION = '1.12.0';
+    const VERSION = '1.12.1';
 
     public function __construct()
     {

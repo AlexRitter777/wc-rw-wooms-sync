@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce RW WooMS Synchronisation 1.12.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-rw-wooms-sync\n"
-"POT-Creation-Date: 2025-08-27T07:21:45+00:00\n"
-"PO-Revision-Date: 2025-08-27 09:25+0200\n"
+"POT-Creation-Date: 2025-08-27T07:34:35+00:00\n"
+"PO-Revision-Date: 2025-08-27 09:35+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -34,6 +34,11 @@ msgstr ""
 #, php-format
 msgid "Successful order synchronization with CRM at %s"
 msgstr "Успешная синхронизация с „Мой склад“ в %s"
+
+#: includes/class-wc-rw-wooms-sync-init.php:55
+#, fuzzy
+msgid "CRM Sync"
+msgstr "Мой склад"
 
 #: includes/class-wc-rw-wooms-sync-init.php:77
 msgid "Synchronization date"
